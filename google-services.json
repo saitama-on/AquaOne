@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "918494578722",
+    "project_id": "newproj2-fc003",
+    "storage_bucket": "newproj2-fc003.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918494578722:android:d85e666a28343c3b53627b",
+        "android_client_info": {
+          "package_name": "com.anonymous.MyReactNativeApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918494578722-7pb0timqri93d9lbs5lsqblafu3nioqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKODFrSx11GAUxIwZX4LTNO6t6aoLg2j4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918494578722-7pb0timqri93d9lbs5lsqblafu3nioqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918494578722:android:90d96f61db03c97153627b",
+        "android_client_info": {
+          "package_name": "yash.yash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918494578722-7pb0timqri93d9lbs5lsqblafu3nioqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKODFrSx11GAUxIwZX4LTNO6t6aoLg2j4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918494578722-7pb0timqri93d9lbs5lsqblafu3nioqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
