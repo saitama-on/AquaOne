@@ -8,18 +8,26 @@ import HomePage from './pages/home.js'
 import ValvePage from './pages/valve.js'
 import Notifications from './pages/notification.js'
 import SetLimit from './pages/setLimit.js'
+import ManageAccountPage from './pages/manageAccounts.js';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Define the stack statically
 
 const RootStack = createNativeStackNavigator({
   screens: {
-    Welcome :{
-      screen: WelcomePage,
-      options:{headerShown:false}  
-    },
+    // Welcome :{
+    //   screen: WelcomePage,
+    //   options:{
+    //     headerShown:false,
+    //     animation:'fade',
+    //   }  
+    // },
     Home:{
       screen:HomePage,
-      options:{headerShown:false}
+      options:{
+        headerShown:false,
+        animation:'fade',
+      }
     },
     Notifications:{
       screen:Notifications,
@@ -41,6 +49,14 @@ const RootStack = createNativeStackNavigator({
         
         
       },
+    },
+    ManageAccount:{
+      screen:ManageAccountPage,
+      options:{
+        headerShown:false,
+        animation:'simple_push',
+        presentation:'transparentModal'
+      }
     }
   },
 });
@@ -50,8 +66,10 @@ const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
   return (
-  <PaperProvider>
-    <Navigation />
-  </PaperProvider>
+    <SafeAreaProvider>
+      <PaperProvider>
+        <Navigation />
+      </PaperProvider>
+  </SafeAreaProvider>
   )
 }

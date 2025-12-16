@@ -99,7 +99,7 @@ export default function Notifications(){
             <View style={{width:'100%', backgroundColor:'none'}}>
                 {valveMap.map((item, key)=>{
                     return (
-                        <View style={{padding:10 , marginBottom:5}}> 
+                        <View key={key} style={{padding:10 , marginBottom:5}}> 
                             <Text style={{fontSize:15, fontWeight:600 ,marginBottom:7}}>{item.date}</Text>
                             {item.notifications.map((notif , key)=>{
                                 

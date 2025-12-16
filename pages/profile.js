@@ -1,17 +1,19 @@
-import React from 'react';
-import {View , Text, TouchableOpacity} from 'react-native';
-import { List , Button , Icon , MD3Colors} from 'react-native-paper';
-import {auth} from '../firebase/firebase.js'
-// import { signOut } from 'firebase/auth';
+import React , {useState} from 'react';
+import {View , Text, TouchableOpacity,ScrollView , Modal} from 'react-native';
+import { List , Button , Icon } from 'react-native-paper';
+
 import { signOut  , getAuth} from '@react-native-firebase/auth';
 import { useNavigation , CommonActions } from '@react-navigation/native';
+import {  SafeAreaView } from 'react-native-safe-area-context'
+
+
 
 function Comp1({iconName , CompName , onPress}){
     // alert(onPress);
     return (
     <TouchableOpacity onPress={onPress} style={{ elevation:1 ,alignItems:'center' , marginBottom:20 , display:'flex', flexDirection:'row' ,backgroundColor:'white' , width:"85%" , padding:10 , paddingLeft:15, borderRadius:10}}>
         {/* <TouchableOpacity> */}
-        <Icon source={iconName} size={25} color={MD3Colors.primary30}/>
+        <Icon source={iconName} size={25} color={'#2681ccff'}/>
         <Text style={{fontSize:20 , marginLeft:10}}>{CompName}</Text>
         <Button style={{marginLeft:'auto' , right:-25}} icon="chevron-right"></Button>
         {/* </TouchableOpacity> */}
@@ -19,6 +21,8 @@ function Comp1({iconName , CompName , onPress}){
     )
 }
 export default function Profile(){
+
+    const [modalon , setModalOn] = useState(false)
 
     const navigation = useNavigation();
     const handleLogOut = async()=>{
@@ -36,10 +40,16 @@ export default function Profile(){
         }
 
     }
-    return (
 
-        <View>
-            <View style={{ top:180 ,backgroundColor:'#ebebebff' , height:"88.5%" , alignItems:'center' , borderTopLeftRadius:100 , borderTopRightRadius:100}}>
+    const handleManageAccounts = ()=>{
+        setModalOn(true)
+        navigation.navigate('ManageAccount')
+    }
+    return (
+    
+        <SafeAreaView edges={['top']} style={{flex:1 , backgroundColor:'#ebebebff'}}>
+        <ScrollView style={{backgroundColor:'white'}}>
+            <View style={{ marginTop:120 ,backgroundColor:'#ebebebff' , height:"100%" , alignItems:'center' , borderTopLeftRadius:100 , borderTopRightRadius:100 , paddingBottom:30}}>
                 <View style={{top:-50 ,backgroundColor:'#ffffff' ,borderRadius:10, width:100 , height:100
                 }}>
                     <Text style={{fontSize:60 , textAlign:'center'}}>P</Text>
@@ -53,18 +63,20 @@ export default function Profile(){
                         <Button icon="chevron-right" style={{right:-25}}></Button>
                     </View>
                 </View>
-                <View style={{ elevation:10, alignItems:'center' ,minHeight:60, marginBottom:50 , display:'flex', flexDirection:'row' ,backgroundColor:'#e5fff8ff' , width:"85%" , padding:10 , paddingLeft:15, borderRadius:10}}>
+                <TouchableOpacity onPress={handleManageAccounts} style={{ elevation:1 , backgroundColor:'white', alignItems:'center' ,minHeight:60, marginBottom:50 , display:'flex', flexDirection:'row'  , width:"85%" , padding:10 , paddingLeft:15, borderRadius:10}}>
                     <Text style={{fontWeight:500 ,fontSize:20 , marginRight:'auto' , opacity:0.7}}>Manage Accounts</Text>
                     <Icon source="shape" size={20}></Icon>
-                </View>
+                </TouchableOpacity>
 
                 <Comp1 iconName="update" CompName="App Update"></Comp1>
                 <Comp1 iconName="help" CompName="Help & Support"></Comp1>
                 <Comp1 iconName="sheild-check" CompName="Legal"></Comp1>
                 <Comp1 iconName="logout" CompName="Logout" onPress={handleLogOut}></Comp1>
-                
+
                 
             </View>
-        </View>
+        </ScrollView>
+        </SafeAreaView>
+        
     )
 }
