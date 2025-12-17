@@ -7,14 +7,17 @@ function ValveComp({props}){
 
     // alert(props);
     return (
-        <View style={{elevation:5 ,padding:10 ,borderRadius:10 , width:'100%' , display:'flex' , flexDirection:'row' , marginBottom:10 , backgroundColor:'white' , alignItems:'center'}}>
-            <View style={{marginRight:10 , width:'20%', justifyContent:'center', alignItems:'center'}}>
-                <Icon source={props.open ? 'water' : 'water-off'} color='#7cb2d9' size={40}></Icon>
+        <View style={{elevation:0 ,padding:10 ,borderRadius:10 , width:'100%' , 
+        display:'flex' , flexDirection:'row' , marginBottom:10 , backgroundColor:'white' ,
+         alignItems:'center' , justifyContent:'space-around'}}>
+            <View style={{marginRight:10,width:'15%', alignItems:'center'}}>
+                
+                <Icon source={require('../assets/waterLeak.png')} color='#95d0faff' size={30}></Icon>
             </View>
-            <View>
-                <Text style={{fontSize:18 , fontWeight:600}}>Valve {props.open ? 'open' : 'close'}</Text>
-                <Text>-- On {props.location}</Text>
-                <Text>-- By {props.person}</Text>
+            <View style={{width:'60%'}}>
+                <Text style={{fontSize:16 , fontWeight:600}}>{props.message}</Text>
+                <Text style={{opacity:0.8}}> {props.description}</Text>
+                
             </View>
             <View style={{marginLeft:'auto' ,paddingRight:10}}>
                 <Text style={{opacity:0.5}}>{props.time}</Text>
@@ -34,7 +37,10 @@ export default function Notifications(){
                     open:false,
                     location:'office',
                     person:'PG',
-                    time:'11:34PM'
+                    time:'11:34PM',
+                    message:'Leak Detected',
+                    description:'If you are not using any tabs, tap here to turn off the tab.'
+
                 }
             ]
         }
@@ -46,13 +52,17 @@ export default function Notifications(){
                     open:false,
                     location:'3rd-floor',
                     person:'PG',
-                    time:'1:30PM'
+                    time:'1:30PM',
+                    message:'Tap opened for 45 mins',
+                    description:'Admin turned off the valve at 2:32pm'
                 },
                 {
                     open:true,
                     location:'3rd-floor',
                     person:'PG',
-                    time:'1:30PM'
+                    time:'1:30PM',
+                    message:'Leak Detected',
+                    description:'If you are not using any tabs, tap here to turn off the tab.'
                 }
             ]
         },
@@ -63,13 +73,17 @@ export default function Notifications(){
                     open:false,
                     location:'3rd-floor',
                     person:'PG',
-                    time:'1:30PM'
+                    time:'1:30PM',
+                    message:'Tap opened for 45 mins',
+                    description:'Admin turned off the valve at 2:32pm'
                 },
                 {
                     open:true,
                     location:'3rd-floor',
                     person:'PG',
-                    time:'1:30PM'
+                    time:'1:30PM',
+                    message:'Leak Detected',
+                    description:'If you are not using any tabs, tap here to turn off the tab.'
                 }
             ]
         },
@@ -80,13 +94,17 @@ export default function Notifications(){
                     open:false,
                     location:'3rd-floor',
                     person:'PG',
-                    time:'1:30PM'
+                    time:'1:30PM',
+                    message:'Leak Detected',
+                    description:'If you are not using any tabs, tap here to turn off the tab.'
                 },
                 {
                     open:true,
                     location:'3rd-floor',
                     person:'PG',
-                    time:'1:30PM'
+                    time:'1:30PM',
+                    message:'Tap opened for 45 mins',
+                    description:'Admin turned off the valve at 2:32pm'
                 }
             ]
         }
@@ -95,7 +113,7 @@ export default function Notifications(){
     return (
         <SafeAreaProvider>
         <SafeAreaView>
-        <ScrollView  style={{height:'100%'  , padding:20 , backgroundColor:'#e6ecf2'}}>
+        <ScrollView  style={{height:'100%'  , padding:10 , backgroundColor:'#e6ecf2'}}>
             <View style={{width:'100%', backgroundColor:'none'}}>
                 {valveMap.map((item, key)=>{
                     return (
@@ -103,7 +121,7 @@ export default function Notifications(){
                             <Text style={{fontSize:15, fontWeight:600 ,marginBottom:7}}>{item.date}</Text>
                             {item.notifications.map((notif , key)=>{
                                 
-                                return <ValveComp props={notif}/>
+                                return <ValveComp props={notif} key={key}/>
                             })}
                         </View>
                     )

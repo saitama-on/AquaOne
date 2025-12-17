@@ -1,13 +1,14 @@
 import React , {useState , useEffect} from 'react';
-import {View , Text , TouchableOpacity , ScrollView} from 'react-native';
+import {View , Text , TouchableOpacity , ScrollView , ImageBackground} from 'react-native';
 import { List , Button , IconButton, Icon} from 'react-native-paper';
 import { SafeAreaView , SafeAreaProvider } from 'react-native-safe-area-context';
 import TopBar from '../components/topbar';
 import { useNavigation } from '@react-navigation/native';
 import {Calendar} from 'react-native-calendars';
+import bgImage from '../assets/waterbg.png'
 import { BarChart, LineChart, PieChart, PopulationPyramid, RadarChart } from "react-native-gifted-charts";
 const bgcolor='#e6ecf2'
-const data_day=[ {label:'5AM' , value:30}, {label:'9AM',value:40}, {label:'1PM',value:90}, {label:'5PM',value:50} , {label:'9PM' , value:10},{label:'1AM' , value:10}]
+const data_day=[ {label:'5AM' , value:30}, {label:'9AM',value:20}, {label:'1PM',value:70}, {label:'5PM',value:40} , {label:'9PM' , value:90},{label:'1AM' , value:50}]
 const data_week=[ {label:'Mon' , value:200}, {label:'Tue',value:180}, {label:'Wed',value:190}, {label:'Thurs',value:170} , {label:'Fri',value:170} , {label:'Sat',value:140} , {label:'Sun',value:200}]
 
 const data_month=[ {label:'Week-1' , value:1500}, {label:'Week-2',value:1800}, {label:'Week-3',value:1900}, {label:'Week-4',value:1600}]
@@ -36,6 +37,7 @@ export default function Dashboard(){
     const [currentChoice , setCurrentChoice] = useState(0);
     const [chartWidth , setChartWidth] = useState(0);
     const [chartHeight , setChartHeight] = useState(0);
+    const [showCalender  , setShowCalender] = useState(false);
     const [showConsumption , setShowConsumption] = useState(false);
     const handleDailyLimit = () =>{
         navigation.navigate('SetLimit')
@@ -51,6 +53,27 @@ export default function Dashboard(){
 
     const handleToggleConsumption = ()=>{
         setShowConsumption(prev =>!prev)
+    }
+
+
+    // useEffect(()=>{
+    //     if(currentChoice == 3){
+    //         //show calender
+    //         // alert('show Cal')
+    //         // setShowCalender(true);
+    //         navigation.navigate('CalendarPage');
+    //         // setCurrentChoice(0)
+    //     }
+    //     else{
+    //         setShowCalender(false)
+    //     }
+    // }, [currentChoice])
+
+    const handleCalendar = ()=>{
+        console.log(showCalender)
+        
+        navigation.navigate('CalendarPage');
+        
     }
     return(
         
@@ -76,7 +99,7 @@ export default function Dashboard(){
                     <TouchableOpacity onPress={
                        ()=> setCurrentChoice(3)
                     } style={{borderRadius:10 , width:'25%',backgroundColor: currentChoice==3 ? 'white' : bgcolor, height:40 , alignItems:'center',justifyContent:'center'}}>
-                    <IconButton icon='calendar' >
+                    <IconButton icon='calendar' iconColor='black' style={{opacity: currentChoice ==3 ? 1 : 0.5}} onTouchStart={handleCalendar} >
 
                     </IconButton>
                     </TouchableOpacity> 
@@ -85,22 +108,47 @@ export default function Dashboard(){
 
             {/* Chart Area */}
             <View style={{ width:'100%' , backgroundColor:bgcolor , alignItems:'center' , padding:20}}>
-                {showConsumption ? <View style={{ height:chartHeight ,padding:5, paddingTop:10 , paddingBottom:10 , elevation:1 ,borderRadius:10, width:'100%', backgroundColor:'white' , justifyContent:'center' , alignItems:'center'}} ><Text>Consumption</Text></View> :
+                {
+                showConsumption ? 
+                
+                    <View style={{ height:chartHeight ,
+                        padding:0, paddingTop:0 , paddingBottom:0 
+                        , elevation:1 ,borderRadius:0, width:'100%'
+                        , backgroundColor:'white' }} >
+                        <ImageBackground source={bgImage} style={{width:'100%' , justifyContent:'center' 
+                        , alignItems:'center' ,height:'100%'}}>
+                            <Text>Consumption</Text>
+                        </ImageBackground> 
+                    </View>
+                    :
  
-                <View onLayout={hanldeChartDims} style={{ padding:5, paddingTop:10 , paddingBottom:10 , elevation:1 ,borderRadius:10, width:'100%', backgroundColor:'white' , justifyContent:'center' , alignItems:'center'}}>
-                    <BarChart stepValue={currentChoice==0 ? 10 : currentChoice==1 ? 30 : 200} 
-                     backgroundColor='white' 
-                     data={currentChoice==0 ? data_day : currentChoice==1 ? data_week : data_month} 
-                     width={chartWidth/1.3} 
-                     frontColor={'#90c3ecff'}
-                     xAxisColor={'#90c3ecff'}
-                     yAxisColor={'#90c3ecff'}
-                    rulesColor={'#90c3ecff'}
-                    xAxisLabelTextStyle={{opacity:0.5}}
-                    yAxisTextStyle={{opacity:0.5}}
-                     />
-                </View>
-}
+                    <View onLayout={hanldeChartDims} style={{ padding:5, paddingTop:10 , paddingBottom:10 , elevation:1 ,borderRadius:10, width:'100%', backgroundColor:'white' , justifyContent:'center' , alignItems:'center'}}>
+                        <LineChart stepValue={currentChoice==0 ? 10 : currentChoice==1 ? 30 : 200} 
+                        backgroundColor='white' 
+                        data={currentChoice==0 ? data_day : currentChoice==1 ? data_week : data_month} 
+                        width={chartWidth/1.3} 
+                        frontColor={'#90c3ecff'}
+                        xAxisColor={'#90c3ecff'}
+                        yAxisColor={'#90c3ecff'}
+                        rulesColor={'#90c3ecff'}
+                        xAxisLabelTextStyle={{opacity:0.5}}
+                        yAxisTextStyle={{opacity:0.5}}
+                        height={250}
+                        color={'#90c3ecff'}
+                        hideDataPoints
+                        curved
+                        isAnimated
+                        thickness={3}
+                        showArrows
+                        arrowConfig={{
+                            length:5,
+                            width:5,
+                            
+                            strokeColor:'#51a4e9ff'
+                        }}
+                        />
+                    </View>
+                }
                 <View style={{width:'100%' , marginTop:20 , backgroundColor:bgcolor}}>
                     <TouchableOpacity onPress={handleToggleConsumption} style={{display:'flex' , flexDirection:'row' , marginLeft:'auto' , backgroundColor:'white', padding:10 , borderRadius:10}}>
                         <Icon source="chart-donut" color='#339ff8ff' size={20}></Icon>
@@ -111,7 +159,8 @@ export default function Dashboard(){
 
             {/* set daily limit area */}
             <View style={{width:'100%' , backgroundColor: bgcolor ,alignItems:'center',padding:15}}>
-                <View style={{width:'100%' , backgroundColor:'white' , borderRadius:10}}>
+                <ImageBackground source={bgImage} style={{flex:1 , borderRadius:10}}>
+                <View style={{width:'100%' }}>
                     <TouchableOpacity onPress={handleDailyLimit} style={{display:'flex' , flexDirection:'row' ,width:'100%' , padding:10 , alignItems:'center'}}>
                         <View style={{width:'80%' , marginRight:'auto'}}>
                         <Text style={{fontSize:25 , fontWeight:600 , marginRight:'auto' , opacity:0.7}}>Set Daily Limit</Text>
@@ -122,6 +171,7 @@ export default function Dashboard(){
                     
 
                 </View>
+                </ImageBackground>
             </View>
             
             

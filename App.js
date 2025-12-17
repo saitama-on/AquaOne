@@ -5,7 +5,8 @@ import { PaperProvider , IconButton} from 'react-native-paper';
 import { Text, View, Button } from 'react-native';
 import WelcomePage from './pages/welcome.js'
 import HomePage from './pages/home.js'
-import ValvePage from './pages/valve.js'
+import ValvePage from './pages/valve.js';
+import CalendarComp from './pages/calendar.js';
 import Notifications from './pages/notification.js'
 import SetLimit from './pages/setLimit.js'
 import ManageAccountPage from './pages/manageAccounts.js';
@@ -55,6 +56,14 @@ const RootStack = createNativeStackNavigator({
       options:{
         headerShown:false,
         animation:'simple_push',
+        presentation:'transparentModal'
+      }
+    },
+    CalendarPage:{
+      screen:CalendarComp,
+      options:{
+        headerShown:false,
+        animation:'slide_from_right',
         presentation:'transparentModal'
       }
     }

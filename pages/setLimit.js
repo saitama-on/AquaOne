@@ -1,6 +1,6 @@
 import React , {useState} from 'react'
 import {useNavigation} from '@react-navigation/native'
-import {View , KeyboardAvoidingView , Text , StyleSheet, Dimensions,TouchableOpacity
+import {View , ImageBackground , Text , StyleSheet, Dimensions,TouchableOpacity
    , Keyboard
 } from 'react-native'
 import { IconButton, TextInput , Button} from 'react-native-paper';
