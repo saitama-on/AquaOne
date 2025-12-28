@@ -1,4 +1,5 @@
-import React ,{useState}from "react";
+import React ,{useState , useEffect}from "react";
+import { getAuth } from "@react-native-firebase/auth";
 import {View , Text , StyleSheet } from 'react-native'
 import { IconButton } from "react-native-paper";
 import {useNavigation} from '@react-navigation/native'
@@ -9,9 +10,58 @@ import {RadioButton} from 'react-native-paper';
 export default function ManageAccount(){
 
     const navigation = useNavigation();
+    const [membersInfo , setMemebersInfo] = useState(null);
+    const [info , setInfo] = useState(null);
     const handleClose = ()=>{
         navigation.goBack();
     }
+
+    useEffect(()=>{
+
+        const fetchInfo = async()=>{
+                    try{
+                        const user = await getAuth().currentUser;
+                        console.log('User Info' , user);
+                        const token = await user.getIdToken();
+                        // console.log('token is :' , token);
+                        const response = await fetch('https://api.aquesa.in/api/v1/user',{
+                            method:'GET',
+                            headers:{
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+        
+                        const data = await response.json();
+                        setInfo(data);
+                        console.log(data);
+                    }
+                    catch(e){
+                        console.log(e);
+                    }
+        };
+        
+                
+        const fetchMembersInfo = async()=>{
+            try{
+                const response = await fetch(`https://api.aquesa.in/api/v1/member?dwelling_id=${user?.dwelling[0].dwelling_id}`,{
+                    method:'GET',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                setMemebersInfo(data);
+            }
+            catch(e){
+                console.log(e);
+            }
+        };
+
+        fetchInfo();
+        fetchMembersInfo();
+            
+    },[]);
 
     const [account , setAccount] = useState(0);
     
@@ -26,26 +76,16 @@ export default function ManageAccount(){
                 <View style={style.mainContent}>
                     
                     <RadioButton.Group value={account} onValueChange={newValue => setAccount(newValue)}>
+                        {membersInfo?.members.map((item , id) =>
                         <View style={style.radio}>
                             <Text style={style.radioText}>
-                                Account 1 - Yash
+                                Account {id+1} - {item.name}
                             </Text>
                             <RadioButton value={0} color="#7bbbf0ff"></RadioButton>
                         </View>
+                        )}
 
-                        <View style={style.radio}>
-                            <Text style={style.radioText}>
-                                Account 2 - Raj
-                            </Text>
-                            <RadioButton value={1} color="#7bbbf0ff"></RadioButton>
-                        </View>
-
-                        <View style={style.radio}>
-                            <Text style={style.radioText}>
-                                Account 3 - Om
-                            </Text>
-                            <RadioButton value={2} color="#7bbbf0ff"></RadioButton>
-                        </View>
+                    
                     </RadioButton.Group>
                 </View>
             </View>

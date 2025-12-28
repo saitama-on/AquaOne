@@ -1,4 +1,4 @@
-import React , {useState , useRef} from 'react';
+import React , {useState , useEffect} from 'react';
 import { Text, View , KeyboardAvoidingView , ScrollView, TouchableOpacity} from 'react-native';
 import { TextInput , Button} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -6,12 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 import {LoaderKitView} from 'react-native-loader-kit'
 import {getAuth,onAuthStateChanged, signInWithPhoneNumber } from '@react-native-firebase/auth';
 
+
 // const auth = getAuth();
 // const app = firebase.initializeApp();
 
 function Loader(){
     return (
-        <View style={{width:'100%' , backgroundColor:'none'}}>
+        <View style={{backgroundColor:'none'}}>
             <LoaderKitView name='BallPulse' style={{height:50}} color={'#85c6fcff'}/>
             
              <Text style={{color:'white'}}>............</Text>
@@ -35,6 +36,9 @@ function EnterNumber({setOtpSent ,setConfirm , setLoading}){
             setLoading(true);
             const confirmation =  await signInWithPhoneNumber(getAuth() ,'+91'+number);
             // alert(confirmation)
+            // console.log(confirmation.confirm);
+            // console.log("hello");
+            // console.log('confirmation' , confirmation._auth);
             setConfirm(confirmation)
             // setVerId(vId);
             setOtpSent(true);
@@ -43,6 +47,7 @@ function EnterNumber({setOtpSent ,setConfirm , setLoading}){
             // ("OTP sent!");
         } catch (e) {
         alert(e.message);
+        console.log(e);
         setOtpSent(false);
         setLoading(false);
         };
@@ -89,8 +94,8 @@ function EnterOtp({setOtpSent , navigation , confirm , setLoading}){
             // setVerId(null);
             // setOtp('');
 
-            navigation.replace('Home');
-            setLoading(false);
+            // navigation.replace('Home');
+            // setLoading(false);
         } catch (e) {
             alert(e);
             setLoading(false)
@@ -99,7 +104,8 @@ function EnterOtp({setOtpSent , navigation , confirm , setLoading}){
 
     const handleChangeNumber = ()=>{
         setOtpSent(false);
-        setLoading(false)
+        setLoading(false);
+
         // setNumber('');
     }
     return(
@@ -132,7 +138,49 @@ export default function WelcomePage(){
     const [confirm , setConfirm] = useState(null);
     const [otpSent , setOtpSent] = useState(false);
     const [loading , setLoading ] = useState(false);
+    const [initializing, setInitializing] = useState(true);
+    const [user, setUser] = useState();
 
+    const handleAuthStateChanged = async (user) => {
+
+        if(!user){
+            console.log(user , "null?");
+            setInitializing(false);
+            navigation.navigate('Welcome');
+        }
+
+        else{
+            setUser(user);
+            // console.log('user' , user);
+            const token = await user.getIdToken();
+            console.log('token' , token);
+            setLoading(false);
+            navigation.replace('Home');
+        }
+        
+    }
+
+    useEffect(() => {
+        const subscriber = onAuthStateChanged(getAuth(), handleAuthStateChanged);
+        return subscriber; // unsubscribe on unmount
+    }, []);
+
+    
+
+
+    // useState(()=>{
+    //     console.log(confirm);
+    // },[confirm])
+
+
+    if(initializing){
+        return (
+        <View style={{display:'flex', backgroundColor:'none',
+            justifyContent:'center' , alignItems:'center' , height:'100%' , width:'100%'}}>
+            <Loader/>
+        </View>
+        )
+    }
 
     return (
     <KeyboardAvoidingView

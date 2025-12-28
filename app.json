@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MyReactNativeApp",
-    "slug": "MyReactNativeApp",
+    "name": "aquesa",
+    "slug": "aquesa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,11 +12,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": ["@react-native-firebase/app", "@react-native-firebase/auth"],
+    "plugins": ["@react-native-firebase/app", "@react-native-firebase/auth" , "@react-native-firebase/app-check"],
 
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.MyReactNativeApp"
+      "bundleIdentifier": "com.fueb.aquesa"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +24,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.MyReactNativeApp",
+      "package": "com.fueb.aquesa",
       "googleServicesFile": "./google-services.json"
 
     },

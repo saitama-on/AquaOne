@@ -1,11 +1,12 @@
-import React , {useState} from 'react'
+import React , {useState , useEffect , useContext} from 'react'
 import {useNavigation} from '@react-navigation/native'
 import {View , ImageBackground , Text , StyleSheet, Dimensions,TouchableOpacity
-   , Keyboard
+   , Keyboard , ToastAndroid
 } from 'react-native'
 import { IconButton, TextInput , Button} from 'react-native-paper';
 import Slider from '../components/slider';
-
+import {getAuth} from '@react-native-firebase/auth';
+import { UserContext } from '../App.js';
 // import { Slider } from '@rneui/themed';
 
 
@@ -14,8 +15,47 @@ export default function SetLimit(){
     const navigation = useNavigation();
     const {height} = Dimensions.get('window');
     const [dailyLimit , setDailyLimit] = useState('100');
-    const [sliderDailyLimit , setSliderDailyLimit] = useState('100')
     const [isFocused , setIsFocused] = useState(false);
+    const [Token , setToken] = useState(null);
+    const [DwellingId , setDwellingId] = useState(null);
+    const {userInfo , setUserInfo , refreshUserInfo} = useContext(UserContext);
+    // console.log("here")
+    // console.log(userInfo)
+    
+    useEffect(()=>{
+        const fetchLimit = async()=>{
+
+            try{
+                // console.log(User?.dwelling[0]?.dwelling_id);
+                const user = await getAuth().currentUser;
+                const token = await user.getIdToken();
+                // setToken(token);
+                setDwellingId(userInfo?.dwelling[0]?.dwelling_id);
+                const response = await fetch(`https://api.aquesa.in/api/v1/dwelling/${userInfo?.dwelling[0]?.dwelling_id}/limit`,{
+                    method:'GET',
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if(!response.ok){
+                    console.log('Failed to fetch limit');
+                    return;
+                }
+                const data = await response.json();
+                console.log('response ' ,data)
+                setDailyLimit(data.limit.toString());
+            }catch(e){
+                console.log(e);
+            }
+        }
+
+        
+        fetchLimit();
+        
+    },[]);
+
     Keyboard.addListener('keyboardDidShow' , ()=>{
         setIsFocused(true);
     })
@@ -29,22 +69,64 @@ export default function SetLimit(){
         navigation.goBack();
     }
 
-    const handleLimit = () =>{
+    const handleLimit = async() =>{
+        // console.log(DwellingId);
+        const user = await getAuth().currentUser;
+        // console.log(user);
+        const token = await user?.getIdToken();
+        // console.log("hell")
+
+        try {
+            const response = await fetch(`https://api.aquesa.in/api/v1/dwelling/${DwellingId}/limit`,{
+                method:'PATCH',
+                headers:{
+                    'Authorization' : `Bearer ${token}`,
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({
+                    limit:dailyLimit
+                })
+            });
+            const data = await response.json();
+
+            if(response.ok){
+                console.log(data);
+                await refreshUserInfo();
+                showToast('Limit Updated Successfully!')
+                navigation.goBack();
+                // alert("Limit Set");
+            }
+            else{
+
+                
+                console.log("Limit Not set" , data);
+            }
+
+
+        }
+        catch(e){
+            console.log(e);
+        }
+
         // setDailyLimit()
         // const higherValue = dailyLimit > sliderDailyLimit ? dailyLimit : sliderDailyLimit;
         // console.log("higer" , dailyLimit , sliderDailyLimit)
         // console.log(dailyLimit)
         // setDailyLimit(higherValue);
         // setSliderDailyLimit(higherValue);
-        alert(dailyLimit)
+        // alert(dailyLimit)
+    }
+
+    const showToast = (msg) =>{
+        ToastAndroid.show(msg ,ToastAndroid.SHORT, ToastAndroid.TOP);
     }
 
     
     return (
         
-        <View style={style.box}>
+        <View style={style.box} onTouchStart={handleClose}>
         
-            <View style={ [style.container , {height:isFocused == true ? height*0.9 : height*0.5}]}>
+            <View style={ [style.container , {height:isFocused == true ? height*0.9 : height*0.5}]} onTouchStart={(e)=> e.stopPropagation()}>
                 <View style={{display:'flex' , flexDirection:'row' , width:'100%' , alignItems:'center'}}>
                 <Text style={{marginRight:'auto' , fontWeight:600,fontSize:30}}>Set Daily Limit</Text>
                 <IconButton icon='close' size={25} onPress={handleClose} iconColor='#339ff8ff'></IconButton>
@@ -54,7 +136,7 @@ export default function SetLimit(){
                     <View style={{display:'flex' , flexDirection:'row'}}>
                         <View style={{marginBottom:10 , width:'100%'}}> 
                             <TextInput
-                            value={dailyLimit}
+                            value={dailyLimit.toString()}
                             keyboardType='numeric'
                             backgroundColor='white'
                             textColor='black'

@@ -2,28 +2,18 @@ import {View ,  Text ,FlatList , Dimensions, StyleSheet} from 'react-native'
 import {useState} from 'react'
 
 export default function Slider({dailyLimit , setDailyLimit}){
-    const [currValue , setCurrValue] = useState(dailyLimit);
     const SCREEN_WIDTH = Dimensions.get('window').width;
     const ITEM_WIDTH = 120;
     const ITEM_MARGIN = 5;
     const EFFECTIVE_ITEM_WIDTH = ITEM_WIDTH + (2 * ITEM_MARGIN); // 100 + 10 = 110
 
+    console.log(dailyLimit);
     let data =[];
     for(let i=0 ; i<4000 ; i+=5){
         data.push(i);
     }
+    const initialIndex = data.indexOf(parseInt(dailyLimit) || 0);
 
-    // Find index of current value
-    let index = 0; // Initialize to 0, not 1
-    for(let i=0 ; i<data.length ; i++){
-        if(currValue == data[i]){
-            index = i;
-            break;
-        }
-    }
-    
-    // console.log(curr);
-    // console.log(index)
     
     // CALCULATE PADDING
     // This padding pushes the first/last item to the center of the screen
@@ -34,7 +24,7 @@ export default function Slider({dailyLimit , setDailyLimit}){
             <FlatList style={{minHeight:115 , margin:'none' , padding:'none'}}
                 data={data}
                 horizontal
-                initialScrollIndex={index}
+                initialScrollIndex={initialIndex}
                 contentContainerStyle={{
                     paddingHorizontal : CENTER_PADDING
                 }}
@@ -50,10 +40,11 @@ export default function Slider({dailyLimit , setDailyLimit}){
                     const offset = e.nativeEvent.contentOffset.x;
                     const ind = Math.round(offset / EFFECTIVE_ITEM_WIDTH);
                     
-                    
-                    setCurrValue(data[ind]);
+                    // console.log(ind)
+                    // setCurrValue(data[ind]);
                     // console.log(data[ind]);
-                    setDailyLimit(data[ind].toString());
+                    setDailyLimit(data[ind])
+                    // console.log(data[ind]);
                     
                 }}
 
@@ -68,7 +59,7 @@ export default function Slider({dailyLimit , setDailyLimit}){
                         backgroundColor:'none',
                         height:'100%'
                     }}>
-                        <Text style={{fontSize: item == currValue ? 70 : 20}}>{item}</Text>
+                        <Text style={{fontSize: item == dailyLimit ? 70 : 20}}>{item}</Text>
                        
                     </View>
                 )}

@@ -1,9 +1,10 @@
-import React from 'react'
+import React , {useState , useEffect} from 'react'
+import { getAuth } from '@react-native-firebase/auth'
 import {View , Text , ScrollView, SafeAreaViewBase} from 'react-native'
 import {Icon} from 'react-native-paper'
 import { SafeAreaProvider , SafeAreaView } from 'react-native-safe-area-context'
 
-function ValveComp({props}){
+export function ValveComp({props}){
 
     // alert(props);
     return (
@@ -15,18 +16,76 @@ function ValveComp({props}){
                 <Icon source={require('../assets/waterLeak.png')} color='#95d0faff' size={30}></Icon>
             </View>
             <View style={{width:'60%'}}>
-                <Text style={{fontSize:16 , fontWeight:600}}>{props.message}</Text>
-                <Text style={{opacity:0.8}}> {props.description}</Text>
+                <Text style={{fontSize:16 , fontWeight:600}}>{props.title}</Text>
+                <Text style={{opacity:0.8}}> {props.body}</Text>
                 
             </View>
             <View style={{marginLeft:'auto' ,paddingRight:10}}>
-                <Text style={{opacity:0.5}}>{props.time}</Text>
+                <Text style={{opacity:0.5}}>{props.timestamp}</Text>
             </View>
         </View>
     )
 }
 
 export default function Notifications(){
+
+    const [info , setInfo] = useState(null);
+    const [valveData , setValveData] = useState(null);
+    // const [token , setToken] = useState(null);
+    useEffect(()=>{
+
+        console.log('Fetching info and valve data');
+        const fetchInfo = async()=>{
+            try{
+                const user = await getAuth().currentUser;
+                // console.log('User Info' , user);
+                const token = await user.getIdToken();
+                
+                // console.log('token is :' , token);
+                const response = await fetch('https://api.aquesa.in/api/v1/user',{
+                    method:'GET',
+                    headers:{
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                    const responseValve = await fetch(`https://api.aquesa.in/api/v1/activity/${data?.dwelling[0]?.dwelling_id}`,{
+                    method:'GET',
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+
+                    }
+                });
+
+                const dataValve = await responseValve.json();
+                // console.log('Valve Data' , dataValve);
+                if(dataValve.logs == null){
+                    setValveData([]);
+                    return;
+                }
+                setValveData(dataValve);
+
+
+                // console.log(data);
+                // setInfo(data);
+                // console.log(data);
+            }
+            catch(e){
+                console.log(e);
+            }
+        };
+
+        fetchInfo();
+    },[]);
+
+    useEffect(()=>{
+        console.log('Valve Data Updated' , valveData);
+    } , [valveData])
+
+   
 
 
     const valveMap = [
@@ -115,7 +174,7 @@ export default function Notifications(){
         <SafeAreaView>
         <ScrollView  style={{height:'100%'  , padding:10 , backgroundColor:'#e6ecf2'}}>
             <View style={{width:'100%', backgroundColor:'none'}}>
-                {valveMap.map((item, key)=>{
+                {/* {valveMap.map((item, key)=>{
                     return (
                         <View key={key} style={{padding:10 , marginBottom:5}}> 
                             <Text style={{fontSize:15, fontWeight:600 ,marginBottom:7}}>{item.date}</Text>
@@ -125,6 +184,13 @@ export default function Notifications(){
                             })}
                         </View>
                     )
+                })} */}
+                {valveData?.map((item , key)=>{
+                    return (
+                        <View key={key} style={{padding:10 , marginBottom:5}}> 
+                            <ValveComp props={item} key={key}/>
+                        </View>
+                    );
                 })}
             </View>
         </ScrollView>
